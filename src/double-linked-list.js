@@ -74,6 +74,8 @@ class DoubleLinkedList {
 			this.head = null;
 			this.tail = null;
 			this.size --;
+			
+			return this;
 		}
 
 		this.tail.prev.next = null;
