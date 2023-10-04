@@ -50,7 +50,50 @@ class DoubleLinkedList {
     this.size ++;
 
     return this;
+  }
 
+	removeFromBegin() {
+		if (this.size === 0) {
+			return this;
+		}
+
+		this.head.next.prev = null; 
+		this.head = this.head.next;
+		this.size --;
+
+		return this;
+
+	}
+
+	removeFromEnd() {
+		if (this.size === 0) {
+			return this;
+		}
+
+		if (this.size === 1) {
+			this.head = null;
+			this.tail = null;
+			this.size --;
+		}
+
+		this.tail.prev.next = null;
+		this.tail = this.tail.prev;
+		this.size --;
+
+		return this;
+
+	}
+
+  getByValue(value) {
+    let currentNode = this.head;
+
+    while(currentNode) {
+      if (currentNode.value === value) {
+        return currentNode;
+      }
+
+      currentNode = currentNode.next;
+    }
   }
 
   getSize() {
@@ -80,14 +123,14 @@ function main() {
   list.addToEnd(2);
   list.addToEnd(3);
 
+	list.removeFromBegin();
+	list.removeFromEnd();
+
   list.printList();
   console.log('Double linked list size:', list.getSize());
+	console.log('Double linked list value:', list.getByValue(2).toString());
 }
 
 main();
-
-
-
-
 
 

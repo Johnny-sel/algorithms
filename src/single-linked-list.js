@@ -108,10 +108,10 @@ class SingleLinkedList {
   }
 
   removeFromEnd() {
-    if(this.size < 2) {
+    if(this.size === 1) {
       this.head = null;
       this.tail = null;
-      this.size --;
+     	this.size --;
       
       return this;
     }
@@ -175,7 +175,6 @@ class SingleLinkedList {
 
       currentNode = currentNode.next;
     }
-
   }
 
   getSize() {
