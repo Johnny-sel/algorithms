@@ -28,7 +28,8 @@ class DoubleLinkedList {
       return this;
     }
 
-    this.head = newNode;
+    this.head.prev = newNode;
+		this.head = newNode;
     this.size ++;
 
     return this;
@@ -50,7 +51,38 @@ class DoubleLinkedList {
     this.size ++;
 
     return this;
-  }
+  } 
+	
+	addByIndex(value, index) {
+		if (index === 0) {
+			return this.addToBegin(value);
+		}
+
+		if (this.size === 0 || index >= this.size) {
+			return this.addToEnd(value);
+		}
+
+		const isStartFromBegin = Math.floor(this.size / 2) <= index;
+		
+		let currentNode  = isStartFromBegin ? this.head : this.tail;
+		let currentIndex = isStartFromBegin ? 0 : this.size - 1;
+
+		while (currentNode) {
+			if (currentIndex === index) {
+				console.log("currentNode: ", currentNode);
+				const newNode = new Node(value, currentNode.prev, currentNode);
+				currentNode.prev.next = newNode;
+				currentNode.prev = newNode;
+				this.size ++;
+				
+				return this
+			}
+
+			currentNode  = isStartFromBegin ? currentNode.next : currentNode.prev;
+			currentIndex = isStartFromBegin ? currentIndex + 1 : currentIndex - 1;
+		}
+
+	}
 
 	removeFromBegin() {
 		if (this.size === 0) {
@@ -128,8 +160,22 @@ function main() {
 	list.removeFromBegin();
 	list.removeFromEnd();
 
+	list.addByIndex(4,1);
   list.printList();
-  console.log('Double linked list size:', list.getSize());
+
+  list.addByIndex(5,2);
+  list.printList();
+  
+	list.addByIndex(6,4)
+	list.printList();
+
+	list.addByIndex(0,0);
+	list.printList();
+
+	list.addByIndex(1,1);
+	list.printList();
+
+	console.log('Double linked list size:', list.getSize());
 	console.log('Double linked list value:', list.getByValue(2).toString());
 }
 
