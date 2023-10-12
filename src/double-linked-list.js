@@ -58,7 +58,7 @@ class DoubleLinkedList {
       return this.addToBegin(value);
     }
 
-    if (index >= this.size - 1) {
+    if (index >= this.size) {
       return this.addToEnd(value);
     }
 
@@ -154,11 +154,27 @@ class DoubleLinkedList {
     }
   }
 
+  getByIndex(index) {
+    const isStartFromBegin = Math.floor(this.size / 2) <= index;
+
+    let currentNode = isStartFromBegin ? this.head : this.tail;
+    let currentIndex = isStartFromBegin ? 0 : this.size - 1;
+
+    while (currentNode) {
+      if (currentIndex === index) {
+        return currentNode;
+      }
+
+      currentNode = isStartFromBegin ? currentNode.next : currentNode.prev;
+      currentIndex = isStartFromBegin ? currentIndex + 1 : currentIndex - 1;
+    }
+  }
+
   getSize() {
     return this.size;
   }
 
-  printList() {
+  toString() {
     const list = [];
     let currentNode = this.head;
 
@@ -167,50 +183,50 @@ class DoubleLinkedList {
       currentNode = currentNode.next;
     }
 
-    console.log('Double linked list: ', list.toString());
+    return list.toString();
+  }
+
+  toArray() {
+    const list = [];
+    let currentNode = this.head;
+
+    while (currentNode) {
+      list.push(currentNode);
+      currentNode = currentNode.next;
+    }
+
+    return list;
+  }
+
+  removeAll() {
+    let currentNode = this.head;
+
+    while (currentNode) {
+      currentNode = currentNode.next;
+
+      if (currentNode) {
+        currentNode.prev = null;
+        currentNode.next = null;
+      }
+    }
+
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
+  }
+
+  initForTest() {
+    this.addToEnd(0);
+    this.addToEnd(1);
+    this.addToEnd(2);
+    this.addToEnd(3);
+    this.addToEnd(4);
+    this.addToEnd(5);
+    this.addToEnd(6);
+    this.addToEnd(7);
+    this.addToEnd(8);
+    this.addToEnd(9);
   }
 }
 
-function main() {
-  const list = new DoubleLinkedList();
-
-  list.addToBegin(1);
-  list.addToBegin(0);
-
-  list.addToEnd(2);
-  list.addToEnd(3);
-
-  list.removeFromBegin();
-  list.removeFromEnd();
-
-  list.addByIndex(4, 1);
-  list.printList();
-
-  list.addByIndex(5, 2);
-  list.printList();
-
-  list.addByIndex(6, 4);
-  list.printList();
-
-  list.addByIndex(0, 0);
-  list.printList();
-
-  list.addByIndex(1, 1);
-  list.printList();
-
-  list.removeByIndex(1);
-  list.printList();
-
-  list.removeByIndex(0);
-  list.printList();
-
-  list.removeByIndex(3);
-  list.printList();
-
-  list.removeByIndex(3);
-  list.printList();
-  console.log('Double linked list size:', list.getSize());
-  console.log('Double linked list value:', list.getByValue(2)?.toString());
-}
-
-main();
+module.exports = DoubleLinkedList;
