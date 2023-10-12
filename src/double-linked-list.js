@@ -23,14 +23,14 @@ class DoubleLinkedList {
     if (this.size === 0) {
       this.head = newNode;
       this.tail = newNode;
-      this.size ++;
+      this.size++;
 
       return this;
     }
 
     this.head.prev = newNode;
-		this.head = newNode;
-    this.size ++;
+    this.head = newNode;
+    this.size++;
 
     return this;
   }
@@ -41,87 +41,111 @@ class DoubleLinkedList {
     if (this.size === 0) {
       this.head = newNode;
       this.tail = newNode;
-      this.size ++;
+      this.size++;
 
       return this;
     }
-    
+
     this.tail.next = newNode;
     this.tail = newNode;
-    this.size ++;
+    this.size++;
 
     return this;
-  } 
-	
-	addByIndex(value, index) {
-		if (index === 0) {
-			return this.addToBegin(value);
-		}
+  }
 
-		if (this.size === 0 || index >= this.size) {
-			return this.addToEnd(value);
-		}
+  addByIndex(value, index) {
+    if (index === 0 || this.size === 0) {
+      return this.addToBegin(value);
+    }
 
-		const isStartFromBegin = Math.floor(this.size / 2) <= index;
-		
-		let currentNode  = isStartFromBegin ? this.head : this.tail;
-		let currentIndex = isStartFromBegin ? 0 : this.size - 1;
+    if (index >= this.size - 1) {
+      return this.addToEnd(value);
+    }
 
-		while (currentNode) {
-			if (currentIndex === index) {
-				console.log("currentNode: ", currentNode);
-				const newNode = new Node(value, currentNode.prev, currentNode);
-				currentNode.prev.next = newNode;
-				currentNode.prev = newNode;
-				this.size ++;
-				
-				return this
-			}
+    const isStartFromBegin = Math.floor(this.size / 2) <= index;
 
-			currentNode  = isStartFromBegin ? currentNode.next : currentNode.prev;
-			currentIndex = isStartFromBegin ? currentIndex + 1 : currentIndex - 1;
-		}
+    let currentNode = isStartFromBegin ? this.head : this.tail;
+    let currentIndex = isStartFromBegin ? 0 : this.size - 1;
 
-	}
+    while (currentNode) {
+      if (currentIndex === index) {
+        const newNode = new Node(value, currentNode.prev, currentNode);
+        currentNode.prev.next = newNode;
+        currentNode.prev = newNode;
+        this.size++;
 
-	removeFromBegin() {
-		if (this.size === 0) {
-			return this;
-		}
+        return this;
+      }
 
-		this.head.next.prev = null; 
-		this.head = this.head.next;
-		this.size --;
+      currentNode = isStartFromBegin ? currentNode.next : currentNode.prev;
+      currentIndex = isStartFromBegin ? currentIndex + 1 : currentIndex - 1;
+    }
+  }
 
-		return this;
+  removeFromBegin() {
+    if (this.size === 0) {
+      return this;
+    }
 
-	}
+    this.head.next.prev = null;
+    this.head = this.head.next;
+    this.size--;
 
-	removeFromEnd() {
-		if (this.size === 0) {
-			return this;
-		}
+    return this;
+  }
 
-		if (this.size === 1) {
-			this.head = null;
-			this.tail = null;
-			this.size --;
-			
-			return this;
-		}
+  removeFromEnd() {
+    if (this.size === 0) {
+      return this;
+    }
 
-		this.tail.prev.next = null;
-		this.tail = this.tail.prev;
-		this.size --;
+    if (this.size === 1) {
+      this.head = null;
+      this.tail = null;
+      this.size--;
 
-		return this;
+      return this;
+    }
 
-	}
+    this.tail.prev.next = null;
+    this.tail = this.tail.prev;
+    this.size--;
+
+    return this;
+  }
+
+  removeByIndex(index) {
+    if (index === 0 || this.size === 0) {
+      return this.removeFromBegin();
+    }
+
+    if (index >= this.size - 1) {
+      return this.removeFromEnd();
+    }
+
+    const isStartFromBegin = Math.floor(this.size / 2) <= index;
+
+    let currentNode = isStartFromBegin ? this.head : this.tail;
+    let currentIndex = isStartFromBegin ? 0 : this.size - 1;
+
+    while (currentNode) {
+      if (currentIndex === index) {
+        currentNode.prev.next = currentNode.next;
+        currentNode.next.prev = currentNode.prev;
+        this.size--;
+
+        return this;
+      }
+
+      currentNode = isStartFromBegin ? currentNode.next : currentNode.prev;
+      currentIndex = isStartFromBegin ? currentIndex + 1 : currentIndex - 1;
+    }
+  }
 
   getByValue(value) {
     let currentNode = this.head;
 
-    while(currentNode) {
+    while (currentNode) {
       if (currentNode.value === value) {
         return currentNode;
       }
@@ -133,20 +157,19 @@ class DoubleLinkedList {
   getSize() {
     return this.size;
   }
- 
+
   printList() {
     const list = [];
     let currentNode = this.head;
-    
-    while(currentNode) {
+
+    while (currentNode) {
       list.push(currentNode);
       currentNode = currentNode.next;
     }
-    
-    console.log('Double linked list: ', list.toString());
-  }          
-}
 
+    console.log('Double linked list: ', list.toString());
+  }
+}
 
 function main() {
   const list = new DoubleLinkedList();
@@ -157,28 +180,37 @@ function main() {
   list.addToEnd(2);
   list.addToEnd(3);
 
-	list.removeFromBegin();
-	list.removeFromEnd();
+  list.removeFromBegin();
+  list.removeFromEnd();
 
-	list.addByIndex(4,1);
+  list.addByIndex(4, 1);
   list.printList();
 
-  list.addByIndex(5,2);
+  list.addByIndex(5, 2);
   list.printList();
-  
-	list.addByIndex(6,4)
-	list.printList();
 
-	list.addByIndex(0,0);
-	list.printList();
+  list.addByIndex(6, 4);
+  list.printList();
 
-	list.addByIndex(1,1);
-	list.printList();
+  list.addByIndex(0, 0);
+  list.printList();
 
-	console.log('Double linked list size:', list.getSize());
-	console.log('Double linked list value:', list.getByValue(2).toString());
+  list.addByIndex(1, 1);
+  list.printList();
+
+  list.removeByIndex(1);
+  list.printList();
+
+  list.removeByIndex(0);
+  list.printList();
+
+  list.removeByIndex(3);
+  list.printList();
+
+  list.removeByIndex(3);
+  list.printList();
+  console.log('Double linked list size:', list.getSize());
+  console.log('Double linked list value:', list.getByValue(2)?.toString());
 }
 
 main();
-
-
