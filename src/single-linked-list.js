@@ -1,7 +1,7 @@
 class Node {
   constructor(value, next = null) {
     this.value = value;
-    this.next = next; 
+    this.next = next;
   }
 
   toString() {
@@ -16,20 +16,24 @@ class SingleLinkedList {
     this.size = 0;
   }
 
+  get lastIndex() {
+    return this.size - 1;
+  }
+
   addToBegin(value) {
     const newNode = new Node(value, this.head);
 
     if (this.size === 0) {
       this.head = newNode;
       this.tail = newNode;
-      this.size ++;
+      this.size++;
 
       return this;
     }
 
     this.head = newNode;
-    this.size ++;
-    
+    this.size++;
+
     return this;
   }
 
@@ -39,58 +43,73 @@ class SingleLinkedList {
     if (this.size === 0) {
       this.head = newNode;
       this.tail = newNode;
-      this.size ++;
-    
+      this.size++;
+
       return this;
     }
 
     this.tail.next = newNode;
     this.tail = newNode;
-    this.size ++;
+    this.size++;
 
     return this;
   }
 
-  addAfterAt(value, index) {
-    if (this.size === 0 || index > this.size) {
+  addByIndex(value, index) {
+    if (this.size === 0 || index === 0) {
+      return this.addToBegin(value);
+    }
+
+    if (index > this.lastIndex) {
       return this.addToEnd(value);
     }
 
-    let currentIndex = 0;
     let currentNode = this.head;
-    
-    while(currentNode) {
-      if (currentIndex === index) {
-        const newNode = new Node(value, currentNode.next);
-        currentNode.next = newNode;
-        this.size ++;
-        
-        return this;
+    let previousNode = null;
+    let currentIndex = 0;
+
+    while (currentNode) {
+      if (currentIndex !== index) {
+        previousNode = currentNode;
+        currentNode = currentNode.next;
+        currentIndex++;
+        continue;
       }
 
-      currentIndex ++;
-      currentNode = currentNode.next;
-    }
-  }
+      previousNode.next = new Node(value, currentNode);
+      this.size++;
 
-  removeAfterAt(index) {
-    if (this.size < 2 || index >= this.size) {
       return this;
     }
 
-    let currentIndex = 0;
+    return this;
+  }
+
+  removeByIndex(index) {
+    if (this.size === 0 || index === 0) {
+      return this.removeFromBegin();
+    }
+
+    if (index >= this.lastIndex) {
+      return this.removeFromEnd();
+    }
+
     let currentNode = this.head;
+    let previousNode = null;
+    let currentIndex = 0;
 
     while (currentNode) {
-      if (index === currentIndex) {
-        currentNode.next = currentNode.next.next;
-        this.size --;
-
-        return this;
+      if (currentIndex !== index) {
+        previousNode = currentNode;
+        currentNode = currentNode.next;
+        currentIndex++;
+        continue;
       }
 
-      currentIndex ++;
-      currentNode = currentNode.next;
+      previousNode.next = currentNode.next;
+      this.size--;
+
+      return this;
     }
 
     return this;
@@ -102,28 +121,28 @@ class SingleLinkedList {
     }
 
     this.head = this.head.next;
-    this.size --;
+    this.size--;
 
     return this;
   }
 
   removeFromEnd() {
-    if(this.size === 1) {
+    if (this.size === 1) {
       this.head = null;
       this.tail = null;
-     	this.size --;
-      
+      this.size--;
+
       return this;
     }
-    
+
     let currentNode = this.head;
 
     while (currentNode) {
       if (!currentNode.next.next) {
         currentNode.next = null;
         this.tail = currentNode;
-        this.size --;
-      
+        this.size--;
+
         return this;
       }
 
@@ -139,15 +158,15 @@ class SingleLinkedList {
     }
 
     let currentNode = this.head;
-    let prevNode = null;
+    let previousNode = null;
 
     while (currentNode) {
       if (currentNode.value !== value) {
-        prevNode = currentNode;
+        previousNode = currentNode;
         currentNode = currentNode.next;
         continue;
       }
-        
+
       if (currentNode === this.head) {
         return this.removeFromBegin();
       }
@@ -155,10 +174,10 @@ class SingleLinkedList {
       if (currentNode === this.tail) {
         return this.removeFromEnd();
       }
-        
-      prevNode.next = currentNode.next;
-      this.size --;
-      
+
+      previousNode.next = currentNode.next;
+      this.size--;
+
       return this;
     }
 
@@ -168,7 +187,7 @@ class SingleLinkedList {
   getByValue(value) {
     let currentNode = this.head;
 
-    while(currentNode) {
+    while (currentNode) {
       if (currentNode.value === value) {
         return currentNode;
       }
@@ -177,51 +196,59 @@ class SingleLinkedList {
     }
   }
 
-  getSize() {
-    return this.size;
+  getByIndex(index) {
+    let currentNode = this.head;
+    let currentIndex = 0;
+
+    while (currentNode) {
+      if (currentIndex === index) {
+        return currentNode;
+      }
+
+      currentNode = currentNode.next;
+      currentIndex++;
+    }
   }
- 
-  printList() {
+
+  toString() {
     const list = [];
     let currentNode = this.head;
-    
-    while(currentNode) {
+
+    while (currentNode) {
       list.push(currentNode);
       currentNode = currentNode.next;
     }
-    
-    console.log('Single linked list: ', list.toString());
-  }          
+
+    return list.toString();
+  }
+
+  toArray() {
+    const list = [];
+    let currentNode = this.head;
+
+    while (currentNode) {
+      list.push(currentNode);
+      currentNode = currentNode.next;
+    }
+
+    return list;
+  }
+
+  removeAll() {
+    let currentNode = this.head;
+
+    while (currentNode) {
+      currentNode = currentNode.next;
+
+      if (currentNode) {
+        currentNode.next = null;
+      }
+    }
+
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
+  }
 }
 
-function main() {
-  const list = new SingleLinkedList();
- 
-  list.addToBegin(1)
-  list.addToEnd(5);
-  list.addToEnd(6);
-  list.addToBegin(0);
-  list.addToEnd(7);
-  list.addToEnd(8);
-  list.addToEnd(9);
-  list.addToBegin(10);
-
-  list.addAfterAt(11, 0);
-  list.addAfterAt(13, 7);
-  
-  list.removeFromBegin();
-  list.removeFromEnd();
-
-  list.removeByValue(7);
-  list.removeByValue(11);
-  list.removeByValue(13);
-
-  list.removeAfterAt(2);
-
-  list.printList();
-
-  console.log(`Single linked list size: ${list.getSize()}`);
-  console.log(`Node:`, list.getByValue(9));
-}
-
-main();
+module.exports = SingleLinkedList;

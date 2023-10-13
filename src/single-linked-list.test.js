@@ -1,11 +1,10 @@
-const DoubleLinkedList = require('./double-linked-list.js');
+const SingleLinkedList = require('./single-linked-list.js');
 
-describe('Double linked list test: ', () => {
+describe('Single linked list test: ', () => {
   let list = undefined;
 
   beforeEach(() => {
-    list = new DoubleLinkedList();
-
+    list = new SingleLinkedList();
     Array.from(Array(10).keys()).forEach(number => list.addToEnd(number));
   });
 

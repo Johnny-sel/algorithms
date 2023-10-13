@@ -17,6 +17,10 @@ class DoubleLinkedList {
     this.size = 0;
   }
 
+  get lastIndex() {
+    return this.size - 1;
+  }
+
   addToBegin(value) {
     const newNode = new Node(value, null, this.head);
 
@@ -65,7 +69,7 @@ class DoubleLinkedList {
     const isStartFromBegin = Math.floor(this.size / 2) <= index;
 
     let currentNode = isStartFromBegin ? this.head : this.tail;
-    let currentIndex = isStartFromBegin ? 0 : this.size - 1;
+    let currentIndex = isStartFromBegin ? 0 : this.lastIndex;
 
     while (currentNode) {
       if (currentIndex === index) {
@@ -119,14 +123,14 @@ class DoubleLinkedList {
       return this.removeFromBegin();
     }
 
-    if (index >= this.size - 1) {
+    if (index >= this.lastIndex) {
       return this.removeFromEnd();
     }
 
     const isStartFromBegin = Math.floor(this.size / 2) <= index;
 
     let currentNode = isStartFromBegin ? this.head : this.tail;
-    let currentIndex = isStartFromBegin ? 0 : this.size - 1;
+    let currentIndex = isStartFromBegin ? 0 : this.lastIndex;
 
     while (currentNode) {
       if (currentIndex === index) {
@@ -158,7 +162,7 @@ class DoubleLinkedList {
     const isStartFromBegin = Math.floor(this.size / 2) <= index;
 
     let currentNode = isStartFromBegin ? this.head : this.tail;
-    let currentIndex = isStartFromBegin ? 0 : this.size - 1;
+    let currentIndex = isStartFromBegin ? 0 : this.lastIndex;
 
     while (currentNode) {
       if (currentIndex === index) {
@@ -168,10 +172,6 @@ class DoubleLinkedList {
       currentNode = isStartFromBegin ? currentNode.next : currentNode.prev;
       currentIndex = isStartFromBegin ? currentIndex + 1 : currentIndex - 1;
     }
-  }
-
-  getSize() {
-    return this.size;
   }
 
   toString() {
@@ -215,18 +215,6 @@ class DoubleLinkedList {
     this.size = 0;
   }
 
-  initForTest() {
-    this.addToEnd(0);
-    this.addToEnd(1);
-    this.addToEnd(2);
-    this.addToEnd(3);
-    this.addToEnd(4);
-    this.addToEnd(5);
-    this.addToEnd(6);
-    this.addToEnd(7);
-    this.addToEnd(8);
-    this.addToEnd(9);
-  }
 }
 
 module.exports = DoubleLinkedList;
