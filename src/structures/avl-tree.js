@@ -17,7 +17,7 @@ class AVLTree {
   }
 
   getDiffHeight(node) {
-    return h(node.l) - h(node.r);
+    return h(node?.l) - h(node?.r);
   }
 
   getNodeWithMinValue(tree) {
@@ -156,11 +156,11 @@ class AVLTree {
         return false;
       }
 
-      if (node.l) {
+      if (node?.l) {
         stack.push(node.l);
       }
 
-      if (node.r) {
+      if (node?.r) {
         stack.push(node.r);
       }
     }
@@ -170,33 +170,32 @@ class AVLTree {
 
   sort(sortBy) {
     if (sortBy === 'asc') {
+      const sortAcs = node => {
+        if (node != null) {
+          sortAcs(node.l);
+          this.asc.push(node.v);
+          sortAcs(node.r);
+        }
+        return this.asc;
+      };
+
       this.asc = [];
-      return this.sortAcs(this.root);
+      return sortAcs(this.root);
     }
+
     if (sortBy === 'desc') {
+      const sortDesc = node => {
+        if (node != null) {
+          sortDesc(node.r);
+          this.desc.push(node.v);
+          sortDesc(node.l);
+        }
+        return this.desc;
+      };
+
       this.desc = [];
-      return this.sortDesc(this.root);
+      return sortDesc(this.root);
     }
-  }
-
-  sortAcs(node) {
-    if (node != null) {
-      this.sortAcs(node.l);
-      this.asc.push(node.v);
-      this.sortAcs(node.r);
-    }
-
-    return this.asc;
-  }
-
-  sortDesc(node) {
-    if (node != null) {
-      this.sortDesc(node.r);
-      this.desc.push(node.v);
-      this.sortDesc(node.l);
-    }
-
-    return this.desc;
   }
 
   print() {
@@ -239,11 +238,11 @@ class AVLTree {
 function main() {
   const tree = new AVLTree();
 
-  let i = 1000000;
+  let i = 100;
   while (i--) {
     tree.root = tree.insert(tree.root, i);
   }
-  // tree.print(tree.root);
+  tree.print(tree.root);
   console.log('------------------------------------------');
 
   // i = 250;
@@ -255,6 +254,8 @@ function main() {
 
   console.log('sortAcs: ', tree.sort('asc'));
   console.log('sortDesc: ', tree.sort('desc'));
+  console.log('is balance', tree.isBalance());
+
 }
 
 main();
