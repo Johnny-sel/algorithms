@@ -16,44 +16,6 @@ class AVLTree {
     this.desc = [];
   }
 
-  getDiffHeight(node) {
-    return h(node?.l) - h(node?.r);
-  }
-
-  getNodeWithMinValue(tree) {
-    let currentNode = tree;
-    while (currentNode.l !== null) {
-      currentNode = currentNode.l;
-    }
-    return currentNode;
-  }
-
-  rightRotate(node) {
-    let leftSubtree = node.l;
-    let rightSubtreeOfLeftSubtree = leftSubtree.r;
-
-    leftSubtree.r = node;
-    node.l = rightSubtreeOfLeftSubtree;
-
-    node.h = Math.max(h(node.l), h(node.r)) + 1;
-    leftSubtree.h = Math.max(h(leftSubtree.l), h(leftSubtree.r)) + 1;
-
-    return leftSubtree;
-  }
-
-  leftRotate(node) {
-    let rightSubtree = node.r;
-    let leftSubTreeOfRightSubtree = rightSubtree.l;
-
-    rightSubtree.l = node;
-    node.r = leftSubTreeOfRightSubtree;
-
-    node.h = Math.max(h(node.l), h(node.r)) + 1;
-    rightSubtree.h = Math.max(h(rightSubtree.l), h(rightSubtree.r)) + 1;
-
-    return rightSubtree;
-  }
-
   insert(node, value) {
     if (node === null) {
       return new Node(value);
@@ -64,31 +26,31 @@ class AVLTree {
     } else if (value > node.v) {
       node.r = this.insert(node.r, value);
     } else {
-      throw 'Duplicate values not allowed';
+      throw new Error('Duplicate values not allowed');
     }
 
     node.h = Math.max(h(node.l), h(node.r)) + 1;
-    const diffHeight = this.getDiffHeight(node);
+    const diffHeight = this._getDiffHeight(node);
 
     if (diffHeight > 1) {
       if (value < node.l.v) {
-        return this.rightRotate(node);
+        return this._rightRotate(node);
       }
 
       if (value > node.l.v) {
-        node.l = this.leftRotate(node.l);
-        return this.rightRotate(node);
+        node.l = this._leftRotate(node.l);
+        return this._rightRotate(node);
       }
     }
 
     if (diffHeight < -1) {
       if (value > node.r.v) {
-        return this.leftRotate(node);
+        return this._leftRotate(node);
       }
 
       if (value < node.r.v) {
-        node.r = this.rightRotate(node.r);
-        return this.leftRotate(node);
+        node.r = this._rightRotate(node.r);
+        return this._leftRotate(node);
       }
     }
 
@@ -108,7 +70,7 @@ class AVLTree {
       if (node.l === null || node.r === null) {
         node = node.l || node.r;
       } else {
-        let nodeWithMinValue = this.getNodeWithMinValue(node.r);
+        let nodeWithMinValue = this.min(node.r);
         node.v = nodeWithMinValue.v;
         node.r = this.delete(node.r, nodeWithMinValue.v);
       }
@@ -119,40 +81,41 @@ class AVLTree {
     }
 
     node.h = Math.max(h(node.l), h(node.r)) + 1;
-    const diffHeight = this.getDiffHeight(node);
+    const diffHeight = this._getDiffHeight(node);
 
     if (diffHeight > 1) {
-      if (this.getDiffHeight(node.l) >= 0) {
-        return this.rightRotate(node);
+      if (this._getDiffHeight(node.l) >= 0) {
+        return this._rightRotate(node);
       }
 
-      if (this.getDiffHeight(node.l) < 0) {
-        node.l = this.leftRotate(node.l);
-        return this.rightRotate(node);
+      if (this._getDiffHeight(node.l) < 0) {
+        node.l = this._leftRotate(node.l);
+        return this._rightRotate(node);
       }
     }
 
     if (diffHeight < -1) {
-      if (this.getDiffHeight(node.r) <= 0) {
-        return this.leftRotate(node);
+      if (this._getDiffHeight(node.r) <= 0) {
+        return this._leftRotate(node);
       }
 
-      if (this.getDiffHeight(node.r) > 0) {
-        node.r = this.rightRotate(node.r);
-        return this.leftRotate(node);
+      if (this._getDiffHeight(node.r) > 0) {
+        node.r = this._rightRotate(node.r);
+        return this._leftRotate(node);
       }
     }
 
     return node;
   }
 
-  isBalance(tree) {
-    const stack = [tree];
+  isBalance() {
+    const stack = [this.root];
 
     while (stack.length > 0) {
       const node = stack.pop();
+      const diffHeight = this._getDiffHeight(node);
 
-      if (this.getDiffHeight(node) > 1) {
+      if (diffHeight > 1 || diffHeight < -1) {
         return false;
       }
 
@@ -198,17 +161,81 @@ class AVLTree {
     }
   }
 
+  find(node, value) {
+    if (!node) {
+      return null;
+    }
+
+    if (value === node.v) {
+      return node;
+    }
+
+    if (value < node.v) {
+      return this.find(node.l, value);
+    }
+
+    if (value > node.v) {
+      return this.find(node.r, value);
+    }
+
+    return null;
+  }
+
+  min(node) {
+    if (node?.l) {
+      return this.min(node.l);
+    }
+    return node;
+  }
+
+  max(node) {
+    if (node?.r) {
+      return this.max(node.r);
+    }
+    return node;
+  }
+
   print() {
     if (this.root === null) {
-      console.log('Дерево пусто');
+      console.log('Tree is empty');
       return;
     }
 
-    const lines = this.printTree(this.root, '', true);
+    const lines = this._printTree(this.root, '', true);
     console.log(lines.join('\n'));
   }
 
-  printTree(node, prefix, isTail) {
+  _getDiffHeight(node) {
+    return h(node?.l) - h(node?.r);
+  }
+
+  _rightRotate(node) {
+    let leftSubtree = node.l;
+    let rightSubtreeOfLeftSubtree = leftSubtree.r;
+
+    leftSubtree.r = node;
+    node.l = rightSubtreeOfLeftSubtree;
+
+    node.h = Math.max(h(node.l), h(node.r)) + 1;
+    leftSubtree.h = Math.max(h(leftSubtree.l), h(leftSubtree.r)) + 1;
+
+    return leftSubtree;
+  }
+
+  _leftRotate(node) {
+    let rightSubtree = node.r;
+    let leftSubTreeOfRightSubtree = rightSubtree.l;
+
+    rightSubtree.l = node;
+    node.r = leftSubTreeOfRightSubtree;
+
+    node.h = Math.max(h(node.l), h(node.r)) + 1;
+    rightSubtree.h = Math.max(h(rightSubtree.l), h(rightSubtree.r)) + 1;
+
+    return rightSubtree;
+  }
+
+  _printTree(node, prefix, isTail) {
     if (node === null) {
       return [];
     }
@@ -220,10 +247,10 @@ class AVLTree {
     if (node.l !== null || node.r !== null) {
       const str = `${prefix}${isTail ? '    ' : '│   '}`;
       if (node.l !== null) {
-        children.push(this.printTree(node.l, str, false));
+        children.push(this._printTree(node.l, str, false));
       }
       if (node.r !== null) {
-        children.push(this.printTree(node.r, str, true));
+        children.push(this._printTree(node.r, str, true));
       }
     }
 
@@ -235,29 +262,4 @@ class AVLTree {
   }
 }
 
-function main() {
-  const tree = new AVLTree();
-
-  let i = 100;
-  while (i--) {
-    tree.root = tree.insert(tree.root, i);
-  }
-  tree.print(tree.root);
-  console.log('------------------------------------------');
-
-  // i = 250;
-  // while (i--) {
-  //   tree.root = tree.delete(tree.root, i);
-  // }
-  // tree.print(tree.root);
-  // console.log('------------------------------------------');
-
-  console.log('sortAcs: ', tree.sort('asc'));
-  console.log('sortDesc: ', tree.sort('desc'));
-  console.log('is balance', tree.isBalance());
-
-}
-
-main();
-
-// module.exports = AVLTree;
+module.exports = AVLTree;
