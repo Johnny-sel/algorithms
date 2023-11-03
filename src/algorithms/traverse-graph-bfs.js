@@ -1,4 +1,4 @@
-function traverseGraphBFS(graph, user, cb) {
+function traverseGraphBFS(graph, user, callback) {
   const visited = new Map();
   const queue = [];
 
@@ -18,7 +18,7 @@ function traverseGraphBFS(graph, user, cb) {
       }
     }
 
-    cb(user);
+    callback(user);
   }
 }
 
