@@ -1,5 +1,3 @@
-const Graph = require('../structures/graph');
-
 function traverseGraphDFS(graph, user, cb) {
   const visited = new Map();
 
