@@ -1,4 +1,4 @@
-const traverseTreeDFS = require('./traverseTreeDFS');
+const traverseTreeDFS = require('./traverse-tree-dfs');
 const AVLTree = require('../structures/avl-tree');
 
 describe('traverseDFS tests', () => {
