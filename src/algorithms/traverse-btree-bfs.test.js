@@ -1,4 +1,4 @@
-const traverseTreeBFS = require('./traverse-tree-bfs');
+const traverseTreeBFS = require('./traverse-btree-bfs');
 const AVLTree = require('../structures/avl-tree');
 
 describe('traverseTreeBFS test', () => {
