@@ -4,18 +4,18 @@ function quickSort(list) {
   }
 
   const pivot = Math.floor(list.length / 2);
-  const lh = [];
-  const gh = [];
+  const lt = [];
+  const gt = [];
 
   for (let i = 0; i < list.length; i++) {
     if (list[i] < list[pivot]) {
-      lh.push(list[i]);
+      lt.push(list[i]);
     } else if (list[i] > list[pivot]) {
-      gh.push(list[i]);
+      gt.push(list[i]);
     }
   }
 
-  return [...quickSort(lh), list[pivot], ...quickSort(gh)];
+  return [...quickSort(lt), list[pivot], ...quickSort(gt)];
 }
 
 module.exports = quickSort;
